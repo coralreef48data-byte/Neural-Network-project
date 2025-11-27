@@ -7,7 +7,7 @@ main.py
 
 """
 
-
+# Импорт библиотек
 import sys
 sys.path.append('src')
 import os
@@ -18,23 +18,21 @@ from src.neural_networks_lib import Fully_Connected_NN
 import src.supplementary_lib as spplib
 from src.read_mnist_dataset import MnistDataloader
 
-KK = Fully_Connected_NN([5, 10, 3], [spplib.logistic_func], [spplib.logistic_func_deriv])
 
 NN = Fully_Connected_NN(layers_sizes = [784, 30, 10],
                         af_list = [spplib.logistic_func],
                         af_deriv_list = [spplib.logistic_func_deriv],
                         random_state = 28)
 
-#%%  
 
-# Set file paths based on added MNIST Datasets
+
+# Создание тренировочных и тестовых массивов
 input_path = 'data/MNIST Dataset'
-training_images_filepath = os.join(input_path, 'train-images-idx3-ubyte/train-images-idx3-ubyte')
-training_labels_filepath = os.join(input_path, 'train-labels-idx1-ubyte/train-labels-idx1-ubyte')
-test_images_filepath = os.join(input_path, 't10k-images-idx3-ubyte/t10k-images-idx3-ubyte')
-test_labels_filepath = os.join(input_path, 't10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte')
+training_images_filepath = os.path.join(input_path, 'train-images-idx3-ubyte/train-images-idx3-ubyte')
+training_labels_filepath = os.path.join(input_path, 'train-labels-idx1-ubyte/train-labels-idx1-ubyte')
+test_images_filepath = os.path.join(input_path, 't10k-images-idx3-ubyte/t10k-images-idx3-ubyte')
+test_labels_filepath = os.path.join(input_path, 't10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte')
 
-# Load MINST dataset
 mnist_dataloader = MnistDataloader(training_images_filepath,
                                    training_labels_filepath,
                                    test_images_filepath,
@@ -61,9 +59,8 @@ y_train = y_train.reshape(60000,-1,1)
 X_test = X_test.reshape(10000,-1,1)
 y_test = y_test.reshape(10000,-1,1)
 
-#%%
-# Обучение
 
+# Обучение
 NN.train(X_train = X_train, 
          y_train = y_train,
          epochs = 4,
@@ -71,29 +68,11 @@ NN.train(X_train = X_train,
          eta = 3.0,
          loss_func = spplib.MSE_halved,
          loss_func_deriv = spplib.MSE_halved_deriv,
-         random_state = None,
-         train_flag = False)
+         random_state = None)
 
 
-#%%
+
 # Тестирование
-
 NN.test(X_test, y_test, loss_func = spplib.MSE_halved)
 
 
-#%%
-
-NN.save('storage/NN.csv')
-
-#%%
-
-KK.save('storage/KK.csv')
-
-#%%
-
-KK = Fully_Connected_NN([7, 6, 2], [spplib.logistic_func], [spplib.logistic_func_deriv])
-
-
-#%%
-
-KK.load('storage/NN.csv')
